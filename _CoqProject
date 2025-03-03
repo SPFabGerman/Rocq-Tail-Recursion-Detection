@@ -1,0 +1,18 @@
+# We first define the relative positions of the Rocq modules
+# and use "TRD" as abbreviation for Tail Recursion Detection
+-R theories TRD
+
+# We first load the definitions for fixpoint references and
+./theories/FixpointReference.v
+
+# tracking of fixpoint contextes.
+./theories/ContextTracking.v
+
+# Then we load the definitions of the detection algorithm.
+./theories/TailRecursionDetection.v
+
+# And finally we load the commands to use.
+./theories/Commands.v
+
+# Also, we have some examples
+./examples/Tests.v
