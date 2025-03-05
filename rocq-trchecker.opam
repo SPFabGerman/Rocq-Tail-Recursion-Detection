@@ -1,0 +1,27 @@
+opam-version: "2.0"
+version: "dev"
+maintainer: "marc.lindner@uni-potsdam.de"
+homepage: "https://github.com/SPFabGerman/Rocq-Tail-Recursion-Detection"
+dev-repo: "git+https://github.com/SPFabGerman/Rocq-Tail-Recursion-Detection.git#main"
+bug-reports: "https://github.com/SPFabGerman/Rocq-Tail-Recursion-Detection/issues"
+authors: ["Marc Fabian Lindner <marc.lindner@uni-potsdam.de>"
+          "Mario Frank <mario.frank@uni-potsdam.de>"
+]
+license: "MIT"
+build: [
+  [make "-j" "%{jobs}%" "-f" "Makefile" "all"]
+]
+install: [
+  [make "-f" "Makefile" "install"]
+]
+depends: [
+  "coq-metacoq-utils" {= "1.3.1+8.19"}
+]
+synopsis: "Implementation of a tail recursiveness check for Rocq"
+description: """
+MetaCoq is a meta-programming framework for Rocq.
+
+This module uses the MetaCoq infrastructure and contains functions that
+check whether a specific Rocq function and all functions being called
+transitively are tail-recursive.
+"""
