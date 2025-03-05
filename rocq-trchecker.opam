@@ -1,10 +1,11 @@
 opam-version: "2.0"
 version: "dev"
-maintainer: "Mark Fabian Lindner"
+maintainer: "marc.lindner@uni-potsdam.de"
 homepage: "https://github.com/SPFabGerman/Rocq-Tail-Recursion-Detection"
 dev-repo: "git+https://github.com/SPFabGerman/Rocq-Tail-Recursion-Detection.git#main"
 bug-reports: "https://github.com/SPFabGerman/Rocq-Tail-Recursion-Detection/issues"
-authors: ["Mark Fabian Lindner"
+authors: ["Marc Fabian Lindner <marc.lindner@uni-potsdam.de>"
+          "Mario Frank <mario.frank@uni-potsdam.de>"
 ]
 license: "MIT"
 build: [
