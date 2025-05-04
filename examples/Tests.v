@@ -14,27 +14,26 @@ Fixpoint add2 (a b : nat) : nat :=
     | S a => (add2 a) (S b)
   end.
 
-Fixpoint tfunc1 (a : nat) : bool :=
-  match a with
-    | 0 => true
-    | S a => tfunc2 a
-  end
-with tfunc2 (a : nat) : bool :=
-  match a with
-    | 0 => false
-    | S a => tfunc3 a
-  end
-with tfunc3 (a : nat) : bool :=
-  match a with
-    | 0 => false
-    | S a => if tfunc4 a then false else true
-  end
-with tfunc4 (a : nat) : bool :=
-  match a with
-    | 0 => true
-    | S a => tfunc1 a
+Fixpoint ack m n :=
+  match m, n with
+  | 0,    n'   => add n' 1
+  | S m', 0    => ack m' 1
+  | S m', S n' => let t := ack m' n'
+                  in ack m' t
   end.
 
-Fail MetaCoq Run (ensure_tail_recursion add).
-MetaCoq Run (ensure_tail_recursion add2).
-Fail MetaCoq Run (ensure_tail_recursion tfunc1).
+Fixpoint even n :=
+  match n with
+  | 0 => true
+  | S n' => odd n'
+  end
+with odd n :=
+  match n with
+  | 0 => false
+  | S n' => even n'
+  end.
+
+Fail MetaRocq Run (ensure_tail_recursion add).
+MetaRocq Run (ensure_tail_recursion add2).
+Fail MetaRocq Run (ensure_tail_recursion ack).
+MetaRocq Run (ensure_tail_recursion even).

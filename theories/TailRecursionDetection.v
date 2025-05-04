@@ -1,5 +1,5 @@
-From MetaCoq.Utils Require Import utils.
-From MetaCoq.Template Require Import All.
+From MetaRocq.Utils Require Import utils.
+From MetaRocq.Template Require Import All.
 
 Import IfNotations.
 
@@ -69,7 +69,7 @@ Definition find_all_references (t : term) (context : fixpointcontext) (caller : 
     | tRel n => if (get_name_from_context context n) is Some callee then [mkFixpointReference caller callee definition t StandaloneReference] else []
     
     (* Elementary Stuff that cannot have a recursive call: Variables and Constants *)
-    | tVar _ | tEvar _ _ | tConst _ _ | tInt _ | tFloat _ => []
+    | tVar _ | tEvar _ _ | tConst _ _ | tInt _ | tFloat _ | tString _ => []
     (* Everything to do with types: Sorts, Inductive types and Inductive Constructors *)
     | tSort _ | tInd _ _ | tConstruct _ _ _ => []
     

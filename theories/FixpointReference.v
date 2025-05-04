@@ -1,5 +1,5 @@
-From MetaCoq.Utils Require Import utils.
-From MetaCoq.Template Require Import All.
+From MetaRocq.Utils Require Import utils.
+From MetaRocq.Template Require Import All.
 
 (* This file contains the basic definitions of [FixpointReference]. *)
 

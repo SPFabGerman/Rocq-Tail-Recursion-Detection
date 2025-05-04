@@ -22,12 +22,12 @@ Non-Tail-Recursive Call of add in add (Tests.add): App(Rel(3),[Rel(0),Rel(1)])
 Program contains Non-Tail-recursive calls.
 ```
 
-See also [Tests.v](./Tests.v) for more examples.
+See also [Tests.v](./examples/Tests.v) for more examples.
 
 ## Dependencies
 
-This package depends on [MetaCoq](https://metacoq.github.io/).
-Currently supported versions of MetaCoq are: `1.3.1+8.19`.
+This package depends on [MetaRocq](https://metarocq.github.io/).
+Currently supported versions of MetaRocq are: `1.4+9.0`.
 
 ## Current Limitations
 

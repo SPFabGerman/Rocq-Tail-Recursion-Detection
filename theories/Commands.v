@@ -1,8 +1,8 @@
-From MetaCoq.Utils Require Import utils.
-From MetaCoq.Template Require Import All.
+From MetaRocq.Utils Require Import utils.
+From MetaRocq.Template Require Import All.
 
 Import IfNotations.
-Import MCMonadNotation.
+Import MRMonadNotation.
 
 Require Import FixpointReference.
 Require Import TailRecursionDetection.
