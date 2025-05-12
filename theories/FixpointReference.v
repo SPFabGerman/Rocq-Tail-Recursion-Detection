@@ -1,7 +1,8 @@
 From MetaRocq.Utils Require Import utils.
 From MetaRocq.Template Require Import All.
 
-(* This file contains the basic definitions of [FixpointReference]. *)
+(* This file contains the basic definitions of [FixpointReference].
+These are mainly produced in TailRecursionDetection.v and used in Commands.v. *)
 
 Variant FixpointReferenceKind :=
   | Tailcall : FixpointReferenceKind

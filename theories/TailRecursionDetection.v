@@ -6,7 +6,8 @@ Import IfNotations.
 Require Import FixpointReference.
 Require Import ContextTracking.
 
-(* This file contains the main code to get all recursive references and detect their kind. *)
+(* This file implements the main algorithm to find all recursive references and detect their respective kind.
+It only includes functions for low level term checks. Higher level functions are defined in Commands.v as needed. *)
 
 (** Recursively descend into term and return a list of all fixpoints in it to check.
 Does not return nested fixpoints! These are handled later by [find_all_rec_calls]. *)
@@ -85,7 +86,7 @@ Definition find_all_references (t : term) (context : fixpointcontext) (caller : 
 
 (** Takes a term and returns all recursive references for all fixpoints in it.
 Returns nothing, if the term does not have a fixpoint.
-[definition] is used to create the references. *)
+[definition] is only used to create the references. *)
 Definition find_all_rec_references (t : term) (definition : kername) : list FixpointReference :=
   let fpts := find_all_fixpoints t
   in (flat_map
@@ -103,11 +104,3 @@ Definition find_all_rec_references (t : term) (definition : kername) : list Fixp
       | _ => [] (* This should be unreachable, as [find_all_fixpoints] should only ever return a list of fixpoints. *)
       end)
     fpts).
-
-(* Global Definition check *)
-(** Returns all recursive references inside the provided global declaration.
-Ignores all inductive types and declarations without a defined constant (e.g. an Axiom or external function). *)
-Definition find_all_rec_references_global (gds : global_declarations) : list FixpointReference :=
-  flat_map
-    (fun '(kn, gd) => if gd is ConstantDecl {| cst_body := Some(t) |} then find_all_rec_references t kn else [])
-    gds.

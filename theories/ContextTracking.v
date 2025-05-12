@@ -1,7 +1,9 @@
 From MetaRocq.Utils Require Import utils.
 From MetaRocq.Template Require Import All.
 
-(* Context Tracking *)
+(* This file contains the basic definitions Context Tracking.
+It is only used internally in TailRecursionDetection.v. *)
+
 (* All relevant fixpoints in the current context are kept track of in a list of pairs of deBrujin indices and names.
 When the context changes, these indices need to be updated accordingly. *)
 
