@@ -54,7 +54,7 @@ Definition find_all_references (t : term) (context : fixpointcontext) (caller : 
         (* No direct function call -> descend into function. *)
         else find_all_references_aux_notail func
     
-    (* Let Expressions: increase deBrujin index by 1 *) 
+    (* Let Expressions: increase deBruj in index by 1 *) 
     | tLetIn _name def _type body => find_all_references_aux_notail def ++ find_all_references_aux body (increase_context context 1) is_tailpos
     
     (* Pattern Matching and Projection *)
@@ -74,13 +74,9 @@ Definition find_all_references (t : term) (context : fixpointcontext) (caller : 
     (* Everything to do with types: Sorts, Inductive types and Inductive Constructors *)
     | tSort _ | tInd _ _ | tConstruct _ _ _ => []
     
-    (* TODO: No support for nested Functions / Fixpoints and Arrays, as of now. *)
-    | tLambda _name _type body | tProd _name _type body => []
-    | tFix _ _ => []
-    | tArray _ _ _ _ => []
-    
-    (* No support for nested CoFixpoints. *)
-    | tCoFix _ _ => []
+    (* TODO: No support for nested Functions / Fixpoints and Arrays, as of now. No support for nested CoFixpoints. *)
+    | tLambda _ _ _ | tProd _ _ _ | tFix _ _ | tArray _ _ _ _ | tCoFix _ _ => [mkFixpointReference caller nAnon definition t UnsupportedTerm]
+
     end
   in find_all_references_aux t context true.
 

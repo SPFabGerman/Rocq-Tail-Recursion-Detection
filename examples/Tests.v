@@ -14,6 +14,13 @@ Fixpoint add2 (a b : nat) : nat :=
     | S a => (add2 a) (S b)
   end.
 
+Fixpoint add3 (a b : nat) : nat :=
+  let add' a := add3 a (S b) in
+  match a with
+    | 0 => b
+    | S a => add' a
+  end.
+
 Fixpoint ack m n :=
   match m, n with
   | 0,    n'   => add n' 1
@@ -33,7 +40,16 @@ with odd n :=
   | S n' => even n'
   end.
 
+Fixpoint even2 n :=
+  let odd2 n := negb (even2 n) in
+  match n with
+  | 0 => true
+  | S n' => odd2 n'
+  end.
+
 Fail MetaRocq Run (ensure_tail_recursion add).
 MetaRocq Run (ensure_tail_recursion add2).
+Fail MetaRocq Run (ensure_tail_recursion add3).
 Fail MetaRocq Run (ensure_tail_recursion ack).
 MetaRocq Run (ensure_tail_recursion even).
+Fail MetaRocq Run (ensure_tail_recursion even2).
