@@ -30,7 +30,7 @@ Definition ensure_tail_recursion {A} (t : A) : TemplateMonad unit :=
   
   let fprs := find_all_rec_references_global d in
   monad_iter (tmMsg ∘ string_of_FixpointReference) fprs ;;
-  (if all_tailcalls fprs
+  (if forallb is_tailcall fprs
     then tmMsg "Program contains only Tail-recursive calls."
     else tmFail "Program contains Non-Tail-recursive calls.") ;;
   ret tt.
@@ -60,7 +60,7 @@ Definition check_tail_recursion_in_module (q: string) : TemplateMonad unit :=
   d <- get_all_definitions_from_references grs ;;
   let fprs := flat_map (fun '(kn, t) => find_all_rec_references t kn) d in
   monad_iter (tmMsg ∘ string_of_FixpointReference) fprs ;;
-  (if all_tailcalls fprs
+  (if forallb is_tailcall fprs
     then tmMsg "Module contains only Tail-recursive calls."
     else tmMsg "Module contains Non-Tail-recursive calls.") ;;
   ret tt.

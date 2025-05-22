@@ -30,11 +30,6 @@ Definition is_tailcall (fpr : FixpointReference) : bool :=
   if fpr.(kind) is Tailcall then true else false.
 
 
-(** Returns [true], iff all fixpoint references are [Tailcall]s.*)
-Definition all_tailcalls (fprs : list FixpointReference) : bool :=
-  forallb is_tailcall fprs.
-
-
 Definition string_of_FixpointReference (fpr : FixpointReference) : string :=
   match fpr.(kind) with
   | Tailcall => "Tail-Recursive Call of " ^ (string_of_name fpr.(callee))
