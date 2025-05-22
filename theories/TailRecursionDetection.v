@@ -34,7 +34,7 @@ Fixpoint strip_lambdas (t : term) : (nat * term) :=
 (** Takes a term (typically a function body) and a list of indices and names and returns a list of all references to these indices.
 [caller] and [definition] are used to create the reference record. *)
 Definition find_all_references (t : term) (context : fixpointcontext) (caller : name) (definition : kername) : list FixpointReference :=
-  (** Recursively descend into a term and return a list of all references with matching deBrujin indices.
+  (** Recursively descend into a term and return a list of all references with matching de Bruijn indices.
   (For example recursive function calls.)
   [context] is automatically adjusted during the function call to handle newly introduced variables.
   [is_tailpos] denotes if the current term is in tail positiion. This is used to either assign Tailcall or NonTailcall as a reference [kind]. *)
@@ -44,7 +44,7 @@ Definition find_all_references (t : term) (context : fixpointcontext) (caller : 
     
     (* Function Application *)
     | tApp func args => (flat_map find_all_references_aux_notail args) ++
-      (* Check for direct function call with matching deBrujin index. *)
+      (* Check for direct function call with matching de Bruijn index. *)
       if func is (tRel n)
         then if (get_name_from_context context n) is Some callee
           (* Matching function call -> create reference *)
@@ -54,7 +54,7 @@ Definition find_all_references (t : term) (context : fixpointcontext) (caller : 
         (* No direct function call -> descend into function. *)
         else find_all_references_aux_notail func
     
-    (* Let Expressions: increase deBruj in index by 1 *) 
+    (* Let Expressions: increase de Bruijn index by 1 *)
     | tLetIn _name def _type body => find_all_references_aux_notail def ++ find_all_references_aux body (increase_context context 1) is_tailpos
     
     (* Pattern Matching and Projection *)

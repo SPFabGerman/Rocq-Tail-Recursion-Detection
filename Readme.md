@@ -13,7 +13,7 @@ Fixpoint add (a b : nat) : nat :=
     | S a => S (add a b)
   end.
 
-MetaCoq Run (ensure_tail_recursion add).
+MetaRocq Run (ensure_tail_recursion add).
 ```
 
 The output should be something like:

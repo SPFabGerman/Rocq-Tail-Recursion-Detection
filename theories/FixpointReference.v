@@ -1,6 +1,8 @@
 From MetaRocq.Utils Require Import utils.
 From MetaRocq.Template Require Import All.
 
+Import IfNotations.
+
 (* This file contains the basic definitions of [FixpointReference].
 These are mainly produced in TailRecursionDetection.v and used in Commands.v. *)
 
@@ -21,6 +23,17 @@ Record FixpointReference := mkFixpointReference {
   callterm : term;
   kind : FixpointReferenceKind;
 }.
+
+
+(** Returns [true], iff the fixpoint reference is a [Tailcall].*)
+Definition is_tailcall (fpr : FixpointReference) :=
+  if fpr.(kind) is Tailcall then true else false.
+
+
+(** Returns [true], iff all fixpoint references are [Tailcall]s.*)
+Definition all_tailcalls (fprs : list FixpointReference) :=
+  forallb (fun fpr => is_tailcall fpr) fprs.
+
 
 Definition string_of_FixpointReference (fpr : FixpointReference) : string :=
   match fpr.(kind) with

@@ -4,7 +4,7 @@ From MetaRocq.Template Require Import All.
 (* This file contains the basic definitions Context Tracking.
 It is only used internally in TailRecursionDetection.v. *)
 
-(* All relevant fixpoints in the current context are kept track of in a list of pairs of deBrujin indices and names.
+(* All relevant fixpoints in the current context are kept track of in a list of pairs of de Bruijn indices and names.
 When the context changes, these indices need to be updated accordingly. *)
 
 Definition fixpointcontext := list (nat * name).
@@ -20,8 +20,5 @@ Definition increase_context (cur : fixpointcontext) (b : nat) : fixpointcontext 
 
 (** If the specified [index] corresponds to a fixpoint in the current context, return it's name.
 Otherwise return [None]. *)
-Fixpoint get_name_from_context (context : fixpointcontext) (index : nat) : option name :=
-  match context with
-  | [] => None
-  | (i,n)::c => if i =? index then Some n else get_name_from_context c index
-  end.
+Definition get_name_from_context (context : fixpointcontext) (index : nat) : option name :=
+  SetoidList.findA (fun i => i =? index) context.
