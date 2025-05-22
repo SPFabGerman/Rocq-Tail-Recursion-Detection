@@ -4,7 +4,7 @@ From MetaRocq.Template Require Import All.
 Import IfNotations.
 
 Require Import FixpointReference.
-Require Import ContextTracking.
+Require Import FixpointContext.
 
 (* This file implements the main algorithm to find all recursive references and detect their respective kind.
 It only includes functions for low level term checks. Higher level functions are defined in Commands.v as needed. *)
