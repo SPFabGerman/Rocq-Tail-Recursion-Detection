@@ -6,6 +6,8 @@ Import IfNotations.
 Require Import FixpointReference.
 Require Import FixpointContext.
 
+Notation context_t := FixpointContext.t.
+
 (* This file implements the main algorithm to find all recursive references and detect their respective kind.
 It only includes functions for low level term checks. Higher level functions are defined in Commands.v as needed. *)
 
@@ -33,12 +35,12 @@ Fixpoint strip_lambdas (t : term) : (nat * term) :=
 
 (** Takes a term (typically a function body) and a list of indices and names and returns a list of all references to these indices.
 [caller] and [definition] are used to create the reference record. *)
-Definition find_all_references (t : term) (context : fixpointcontext) (caller : name) (definition : kername) : list FixpointReference :=
+Definition find_all_references (t : term) (context : context_t) (caller : name) (definition : kername) : list FixpointReference :=
   (** Recursively descend into a term and return a list of all references with matching de Bruijn indices.
   (For example recursive function calls.)
   [context] is automatically adjusted during the function call to handle newly introduced variables.
   [is_tailpos] denotes if the current term is in tail positiion. This is used to either assign Tailcall or NonTailcall as a reference [kind]. *)
-  let fix find_all_references_aux (t : term) (context : fixpointcontext) (is_tailpos : bool) {struct t} : list FixpointReference :=
+  let fix find_all_references_aux (t : term) (context : context_t) (is_tailpos : bool) {struct t} : list FixpointReference :=
     let find_all_references_aux_notail := fun t => find_all_references_aux t context false
     in match t with
     
@@ -55,12 +57,12 @@ Definition find_all_references (t : term) (context : fixpointcontext) (caller : 
         else find_all_references_aux_notail func
     
     (* Let Expressions: increase de Bruijn index by 1 *)
-    | tLetIn _name def _type body => find_all_references_aux_notail def ++ find_all_references_aux body (increase_context context 1) is_tailpos
+    | tLetIn _name def _type body => find_all_references_aux_notail def ++ find_all_references_aux body (apply_offset context 1) is_tailpos
     
     (* Pattern Matching and Projection *)
     | tCase _ind _type scrutinee branches => find_all_references_aux_notail scrutinee ++
       (* Descend into each branch and increase index by number of newly introduced variables. *)
-      (flat_map (fun b => find_all_references_aux b.(bbody) (increase_context context (length b.(bcontext))) is_tailpos) branches)
+      (flat_map (fun b => find_all_references_aux b.(bbody) (apply_offset context (length b.(bcontext))) is_tailpos) branches)
     | tProj _proj term => find_all_references_aux_notail term
     
     (* Typecasts *)
@@ -95,7 +97,7 @@ Definition find_all_rec_references (t : term) (definition : kername) : list Fixp
           (fun fpd =>
             (* Get real function body and number of arguments that are added to the context in this definition. *)
             let (index, body) := strip_lambdas fpd.(dbody)
-            in (find_all_references body (increase_context context index) (fpd.(dname).(binder_name)) definition))
+            in (find_all_references body (apply_offset context index) (fpd.(dname).(binder_name)) definition))
           fpds
       | _ => [] (* This should be unreachable, as [find_all_fixpoints] should only ever return a list of fixpoints. *)
       end)
