@@ -6,7 +6,7 @@ Import IfNotations.
 Require Import FixpointReference.
 Require Import FixpointContext.
 
-Notation context_t := FixpointContext.t.
+Module Context := FixpointContext.
 
 (* This file implements the main algorithm to find all recursive references and detect their respective kind.
 It only includes functions for low level term checks. Higher level functions are defined in Commands.v as needed. *)
@@ -35,12 +35,12 @@ Fixpoint strip_lambdas (t : term) : (nat * term) :=
 
 (** Takes a term (typically a function body) and a list of indices and names and returns a list of all references to these indices.
 [caller] and [definition] are used to create the reference record. *)
-Definition find_all_references (t : term) (context : context_t) (caller : name) (definition : kername) : list FixpointReference :=
+Definition find_all_references (t : term) (context : Context.t) (caller : name) (definition : kername) : list FixpointReference :=
   (** Recursively descend into a term and return a list of all references with matching de Bruijn indices.
   (For example recursive function calls.)
   [context] is automatically adjusted during the function call to handle newly introduced variables.
   [is_tailpos] denotes if the current term is in tail positiion. This is used to either assign Tailcall or NonTailcall as a reference [kind]. *)
-  let fix find_all_references_aux (t : term) (context : context_t) (is_tailpos : bool) {struct t} : list FixpointReference :=
+  let fix find_all_references_aux (t : term) (context : Context.t) (is_tailpos : bool) {struct t} : list FixpointReference :=
     let find_all_references_aux_notail := fun t => find_all_references_aux t context false
     in match t with
     
@@ -48,7 +48,7 @@ Definition find_all_references (t : term) (context : context_t) (caller : name) 
     | tApp func args => (flat_map find_all_references_aux_notail args) ++
       (* Check for direct function call with matching de Bruijn index. *)
       if func is (tRel n)
-        then if (get_name_from_context context n) is Some callee
+        then if (find_fix_term context n) is Some callee
           (* Matching function call -> create reference *)
           then [mkFixpointReference caller callee definition t (if is_tailpos then Tailcall else NonTailcall)]
           (* Function call does not match -> ignore *)
@@ -69,7 +69,7 @@ Definition find_all_references (t : term) (context : context_t) (caller : name) 
     | tCast term _kind _type => find_all_references_aux term context is_tailpos
     
     (* Unknown reference to [index] *)
-    | tRel n => if (get_name_from_context context n) is Some callee then [mkFixpointReference caller callee definition t StandaloneReference] else []
+    | tRel n => if (find_fix_term context n) is Some callee then [mkFixpointReference caller callee definition t StandaloneReference] else []
     
     (* Elementary Stuff that cannot have a recursive call: Variables and Constants *)
     | tVar _ | tEvar _ _ | tConst _ _ | tInt _ | tFloat _ | tString _ => []
@@ -92,7 +92,7 @@ Definition find_all_rec_references (t : term) (definition : kername) : list Fixp
       match fpt with
       | tFix fpds n =>
         (* Create context of all fixpoints that we want to check against. This is the same for all definitions of the fixpoint. *)
-        let context := get_fixpoint_context fpds
+        let context := Context.of_fix_term fpds
         in flat_map
           (fun fpd =>
             (* Get real function body and number of arguments that are added to the context in this definition. *)
