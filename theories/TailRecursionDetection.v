@@ -48,12 +48,12 @@ Fixpoint strip_lambdas (t : term) : (nat * term) :=
 
 (** Takes a term (typically a function body) and a list of indices and names and returns a list of all references to these indices.
 [caller] and [definition] are used to create the reference record. *)
-Definition find_all_references (t : term) (context : FixpointContext.t) (caller : name) (definition : kername) : list FixpointReference :=
+Definition find_all_references (t : term) (context : fixpointcontext) (caller : name) (definition : kername) : list FixpointReference :=
   (** Recursively descend into a term and return a list of all references with matching de Bruijn indices.
   (For example recursive function calls.)
   [context] is automatically adjusted during the function call to handle newly introduced variables.
   [is_tailpos] denotes if the current term is in tail positiion. This is used to either assign Tailcall or NonTailcall as a reference [kind]. *)
-  let fix find_all_references_aux (t : term) (context : FixpointContext.t) (is_tailpos : bool) {struct t} : list FixpointReference :=
+  let fix find_all_references_aux (t : term) (context : fixpointcontext) (is_tailpos : bool) {struct t} : list FixpointReference :=
     let find_all_references_aux_notail := fun t => find_all_references_aux t context false
     in match t with
     
