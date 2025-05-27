@@ -16,7 +16,6 @@ Module Context := FixpointContext.
 
 (** This function collects all fixpoints in the given term [t] by recursively
     descending on the term tree.
-    Nested fixpoint collection not done here but in  
     Does not return nested fixpoints! These are handled later by [find_all_rec_references]. *)
 Fixpoint find_all_fixpoints (t : term) : list term :=
   match t with
@@ -64,7 +63,7 @@ Definition find_all_references (t : term) (context : Context.t) (caller : name) 
     | tApp func args => (flat_map find_all_references_aux_notail args) ++
       (* Check for direct function call with matching de Bruijn index. *)
       if func is (tRel n)
-        then if (find_fix_term context n) is Some callee
+        then if (find_fixpoint_name context n) is Some callee
           (* Matching function call -> create reference *)
           then [mkFixpointReference caller callee definition t (if is_tailpos then Tailcall else NonTailcall)]
           (* Function call does not match -> ignore *)
@@ -85,7 +84,7 @@ Definition find_all_references (t : term) (context : Context.t) (caller : name) 
     | tCast term _kind _type => find_all_references_aux term context is_tailpos
     
     (* Unknown reference to [index] *)
-    | tRel n => if (find_fix_term context n) is Some callee then [mkFixpointReference caller callee definition t StandaloneReference] else []
+    | tRel n => if (find_fixpoint_name context n) is Some callee then [mkFixpointReference caller callee definition t StandaloneReference] else []
     
     (* Elementary Stuff that cannot have a recursive call: Variables and Constants *)
     | tVar _ | tEvar _ _ | tConst _ _ | tInt _ | tFloat _ | tString _ => []

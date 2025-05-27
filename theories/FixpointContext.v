@@ -29,5 +29,5 @@ Definition apply_offset (context : t) (offset : nat) : t :=
 
 (** Returns the [name] of the fixpoint at [index] in the current context
     if it exists an [None], otherwise. *)
-Definition find_fix_term (context : t) (index : nat) : option name :=
+Definition find_fixpoint_name (context : t) (index : nat) : option name :=
   SetoidList.findA (fun i => i =? index) context.
