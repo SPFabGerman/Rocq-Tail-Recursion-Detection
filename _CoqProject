@@ -6,7 +6,7 @@
 ./theories/FixpointReference.v
 
 # tracking of fixpoint contexts.
-./theories/ContextTracking.v
+./theories/FixpointContext.v
 
 # Then we load the definitions of the detection algorithm.
 ./theories/TailRecursionDetection.v

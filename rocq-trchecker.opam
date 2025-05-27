@@ -19,9 +19,9 @@ depends: [
 ]
 synopsis: "Implementation of a tail recursiveness check for Rocq"
 description: """
-MetaCoq is a meta-programming framework for Rocq.
+MetaRocq is a meta-programming framework for Rocq.
 
-This module uses the MetaCoq infrastructure and contains functions that
+This module uses the MetaRocq infrastructure and contains functions that
 check whether a specific Rocq function and all functions being called
 transitively are tail-recursive.
 """
