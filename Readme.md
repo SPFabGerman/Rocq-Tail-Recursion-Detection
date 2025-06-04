@@ -13,7 +13,7 @@ Fixpoint add (a b : nat) : nat :=
     | S a => S (add a b)
   end.
 
-MetaRocq Run (ensure_tail_recursion add).
+MetaRocq Run (check_tail_recursion add true true).
 ```
 
 The output should be something like:
@@ -23,6 +23,25 @@ Program contains Non-Tail-recursive calls.
 ```
 
 See also [Tests.v](./examples/Tests.v) for more examples.
+
+## Programs
+
+At the moment we provide two programs:
+- `check_tail_recursion FUN SHOW_ALL FAIL_ON_NON_TAILCALLS`
+- `check_tail_recursion_in_module MODULE_NAME SHOW_ALL FAIL_ON_NON_TAILCALLS`
+
+`FUN` is the global constant of the function to check.
+
+`MODULE_NAME` is the (full) name of the module, as a string.
+(You may need to import `From MetaRocq.Utils Require Import utils.` to get the proper string notation.)
+
+`SHOW_ALL` is a boolean variable.
+When `true`, it shows the state of all recursive calls.
+When `false`, it only shows problematic (non-tail) recursive calls.
+
+`FAIL_ON_NON_TAILCALLS` is a boolean variable.
+When `true`, the program will fail, if a problematic (non-tail) recursive calls is found.
+When `false`, the program will never fail.
 
 ## Dependencies
 

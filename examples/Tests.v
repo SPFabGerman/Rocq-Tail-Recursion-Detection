@@ -47,9 +47,11 @@ Fixpoint even2 n :=
   | S n' => odd2 n'
   end.
 
-Fail MetaRocq Run (ensure_tail_recursion add).
-MetaRocq Run (ensure_tail_recursion add2).
-Fail MetaRocq Run (ensure_tail_recursion add3).
-Fail MetaRocq Run (ensure_tail_recursion ack).
-MetaRocq Run (ensure_tail_recursion even).
-Fail MetaRocq Run (ensure_tail_recursion even2).
+Fail MetaRocq Run (check_tail_recursion add true true).
+MetaRocq Run (check_tail_recursion add2 false true).
+Fail MetaRocq Run (check_tail_recursion add3 false true).
+Fail MetaRocq Run (check_tail_recursion ack false true).
+Fail MetaRocq Run (check_tail_recursion ack true true).
+MetaRocq Run (check_tail_recursion ack true false).
+MetaRocq Run (check_tail_recursion even true true).
+Fail MetaRocq Run (check_tail_recursion even2 false true).

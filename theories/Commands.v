@@ -22,8 +22,9 @@ Definition find_all_rec_references_global (gds : global_declarations) : list Fix
 
 (** MetaRocq Program: Expects a term (generally a previously defined function).
 Checks all the recursive references (in the global environment) that this term depends on.
-Fails if at least one such reference is a Non-Tail-Recursive Call. *)
-Definition ensure_tail_recursion {A} (t : A) : TemplateMonad unit :=
+If [show_all] is [true], prints out all recursive references found. Otherwise prints only Non-Tail-Recursive calls.
+If [fail_on_non_tailcalls] is [true], fails if at least one such reference is a Non-Tail-Recursive Call. *)
+Definition check_tail_recursion {A} (t : A) (show_all : bool) (fail_on_non_tailcalls : bool) : TemplateMonad unit :=
   '( {| declarations := d |}, tsyntax) <- tmQuoteRec t ;;
   match tsyntax with
   | tConst _ _ => tmReturn tt
@@ -31,10 +32,12 @@ Definition ensure_tail_recursion {A} (t : A) : TemplateMonad unit :=
   end ;;
   
   let fprs := find_all_rec_references_global d in
-  monad_iter (tmMsg ∘ string_of_FixpointReference) fprs ;;
+  monad_iter
+    (tmMsg ∘ string_of_FixpointReference)
+    (if show_all then fprs else filter (negb ∘ is_tailcall) fprs) ;;
   (if forallb is_tailcall fprs
     then tmMsg "Program contains only Tail-recursive calls."
-    else tmFail "Program contains Non-Tail-recursive calls.") ;;
+    else (if fail_on_non_tailcalls then tmFail else tmMsg) "Program contains Non-Tail-recursive calls.") ;;
   ret tt.
 
 
@@ -58,13 +61,16 @@ Definition get_all_definitions_from_references (grs : list global_reference) : T
 of functions that are defined in that module.
 If the module name is ambiguous, checks only the first one found.
 Does not check dependencies, either of the module or of the definitions in it.
-Always succeeds. *)
-Definition check_tail_recursion_in_module (q: string) : TemplateMonad unit :=
+If [show_all] is [true], prints out all recursive references found. Otherwise prints only Non-Tail-Recursive calls.
+If [fail_on_non_tailcalls] is [true], fails if at least one such reference is a Non-Tail-Recursive Call. *)
+Definition check_tail_recursion_in_module (q: string) (show_all : bool) (fail_on_non_tailcalls : bool) : TemplateMonad unit :=
   grs <- tmQuoteModule q ;;
   d <- get_all_definitions_from_references grs ;;
   let fprs := flat_map (fun '(kn, t) => find_all_rec_references t kn) d in
-  monad_iter (tmMsg ∘ string_of_FixpointReference) fprs ;;
+  monad_iter
+    (tmMsg ∘ string_of_FixpointReference)
+    (if show_all then fprs else filter (negb ∘ is_tailcall) fprs) ;;
   (if forallb is_tailcall fprs
     then tmMsg "Module contains only Tail-recursive calls."
-    else tmMsg "Module contains Non-Tail-recursive calls.") ;;
+    else (if fail_on_non_tailcalls then tmFail else tmMsg) "Module contains Non-Tail-recursive calls.") ;;
   ret tt.
