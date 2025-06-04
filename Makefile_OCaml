@@ -1,0 +1,29 @@
+OCAMLOPT=ocamlopt
+OCAMLDEP=ocamldep
+OCAMLFLAGS=-g
+
+INPUT=$(wildcard *.ml)
+OBJS=$(INPUT:ml=cmx)
+
+Program.out: $(OBJS)
+	$(OCAMLOPT) -o $@ $(OCAMLFLAGS) $^
+
+
+%.cmo: %.ml
+	$(OCAMLOPT) $(OCAMLFLAGS) -c $<
+
+%.cmi: %.mli
+	$(OCAMLOPT) $(OCAMLFLAGS) -c $<
+
+%.cmx: %.ml
+	$(OCAMLOPT) $(OCAMLFLAGS) -c $<
+
+clean:
+	rm -f Program.out
+	rm -f *.cm[iox]
+	rm -f *.o
+
+.depend:
+	$(OCAMLDEP) *.mli *.ml > .depend
+
+include .depend
