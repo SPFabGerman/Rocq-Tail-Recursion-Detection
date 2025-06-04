@@ -1,5 +1,5 @@
 
-.PHONY: build install clean mrproper all
+.PHONY: build install evaluation clean mrproper all
 
 all: build
 
@@ -15,6 +15,11 @@ build: CoqMakefile
 install: build
 	@echo "Installing."
 	@$(MAKE) -f CoqMakefile install
+
+evaluation: build
+	@echo "Starting evaluation"
+	@bash ./evaluation.sh
+	@echo "Evaluation done"
 
 # The "clean" target (first) cleans up the intermediate files from the
 # Rocq formalisation.
