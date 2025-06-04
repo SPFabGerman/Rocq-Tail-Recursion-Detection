@@ -7,3 +7,7 @@
 *.vo
 *.vok
 *.vos
+
+/examples/evaluation_extracted_code/
+/examples/evaluation_results_algorithm.txt
+/examples/evaluation_results_compilation.txt

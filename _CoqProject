@@ -16,3 +16,6 @@
 
 # Also, we have some examples
 ./examples/Tests.v
+
+# And some evaluation
+./examples/Evaluation.v
