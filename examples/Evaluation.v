@@ -1,7 +1,7 @@
 (* Do the extraction first, as MetaRocq imports override Corelib. *)
 From Corelib Require Extraction.
 From Corelib Require Lists.ListDef Floats.SpecFloat BinNums.IntDef.
-Set Extraction Output Directory "examples/evaluation_extracted_code".
+Set Extraction Output Directory "evaluation_out".
 
 (* Phase 1: Extract OCaml programs of the Corelib.
 We can't use a fully qualified path here, so check that you have the correct library with About. *)
