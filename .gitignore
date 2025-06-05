@@ -7,3 +7,5 @@
 *.vo
 *.vok
 *.vos
+
+/evaluation_out/
