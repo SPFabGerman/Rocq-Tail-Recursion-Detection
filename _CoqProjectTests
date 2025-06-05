@@ -1,0 +1,5 @@
+-R theories TRchecker
+
+./test_suite/TailRecursive.v
+
+./test_suite/NonTailRecursive.v
