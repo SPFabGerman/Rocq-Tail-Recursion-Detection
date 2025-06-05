@@ -19,7 +19,6 @@ install: build
 evaluation: build
 	@echo "Starting evaluation"
 	@bash ./evaluation.sh
-	@echo "Evaluation done"
 
 # The "clean" target (first) cleans up the intermediate files from the
 # Rocq formalisation.
