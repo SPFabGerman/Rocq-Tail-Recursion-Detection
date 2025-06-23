@@ -1,0 +1,12 @@
+s/^Corelib.Init.Datatypes.list_ind$//
+s/^Corelib.Init.Datatypes.nat_ind$//
+s/^Corelib.Init.Decimal.uint_ind$//
+s/^Corelib.Init.Hexadecimal.uint_ind$//
+s/^Corelib.Lists.ListDef.Forall_ind$//
+s/^Corelib.Numbers.BinNums.positive_ind$//
+s/^Corelib.Init.Datatypes.list_sind$//
+s/^Corelib.Init.Datatypes.nat_sind$//
+s/^Corelib.Init.Decimal.uint_sind$//
+s/^Corelib.Init.Hexadecimal.uint_sind$//
+s/^Corelib.Lists.ListDef.Forall_sind$//
+s/^Corelib.Numbers.BinNums.positive_sind$//
