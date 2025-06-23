@@ -16,17 +16,17 @@ Recursive Extraction Library SpecFloat. (* Corelib.Floats.{FloatClass,SpecFloat}
 Require Import Commands.
 From MetaRocq.Utils Require Import utils.
 
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Logic" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Datatypes" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Specif" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Decimal" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Hexadecimal" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Number" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Nat" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Lists.ListDef" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Numbers.BinNums" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.BinNums.PosDef" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.BinNums.NatDef" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.BinNums.IntDef" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Floats.FloatClass" false false).
-MetaRocq Run (check_tail_recursion_in_module "Corelib.Floats.SpecFloat" false false).
+(* MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Logic" true false). *)
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Datatypes" true false).
+(* MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Specif" true false). *)
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Decimal" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Hexadecimal" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Number" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Init.Nat" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Lists.ListDef" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Numbers.BinNums" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.BinNums.PosDef" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.BinNums.NatDef" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.BinNums.IntDef" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Floats.FloatClass" true false).
+MetaRocq Run (check_tail_recursion_in_module "Corelib.Floats.SpecFloat" true false).

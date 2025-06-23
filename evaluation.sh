@@ -12,7 +12,7 @@ mkdir -p ./evaluation_out/
 
 # Run rocq to extract all OCaml programs and run our algorithm
 echo "Compiling Evaluation.v"
-rocq compile -R theories TRchecker examples/Evaluation.v | sed 's/^.*(\(.*\)):.*$/\1/' | sort | grep -E "^Corelib"| uniq | sed -f filter_prop.sed | grep -v '^$' | tee ./evaluation_out/evaluation_results_algorithm.txt
+rocq compile -R theories TRchecker examples/Evaluation.v | sort | grep -E "^Corelib"| uniq | sed -f filter_prop.sed | grep -v '^$' | tee ./evaluation_out/evaluation_results_algorithm.txt
 
 # Run a full OCaml compilation to native binary code
 echo "Compiling OCaml code"
