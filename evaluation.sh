@@ -11,7 +11,7 @@ rm -rf ./evaluation_out/
 mkdir -p ./evaluation_out/
 
 # Run rocq to extract all OCaml programs and run our algorithm
-rocq compile -R theories TRchecker examples/Evaluation.v | sed 's/^.*(\(.*\)):.*$/\1/' | sort | uniq > ./evaluation_out/evaluation_results_algorithm.txt
+rocq compile -R theories TRchecker examples/Evaluation.v | sort | uniq > ./evaluation_out/evaluation_results_algorithm.txt
 
 # Run a full OCaml compilation to native binary code
 make -C ./evaluation_out/ -f ../Makefile_OCaml Program.out
