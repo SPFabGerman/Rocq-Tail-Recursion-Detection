@@ -4,7 +4,7 @@ From Corelib Require Lists.ListDef Floats.SpecFloat BinNums.IntDef.
 
 From Stdlib Require Import ZArith.
 
-Set Extraction Output Directory "evaluation_out".
+Set Extraction Output Directory "evaluation_out/EvalStdlib".
 
 (* Phase 1: Extract OCaml programs of the Corelib.
 We can't use a fully qualified path here, so check that you have the correct library with About. *)
