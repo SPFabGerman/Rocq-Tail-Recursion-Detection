@@ -15,3 +15,7 @@ s/^Nat/Corelib.Init.Nat/
 s/^Specif/Corelib.Init.Specif/
 s/^ListDef/Corelib.Lists.ListDef/
 s/^BinNums/Corelib.Numbers.BinNums/
+s/^BinInt/Stdlib.ZArith.BinInt.Z/
+s/^BinPos/Stdlib.PArith.BinPos.Pos/
+s/^BinNat/Stdlib.NArith.BinNat.N/
+

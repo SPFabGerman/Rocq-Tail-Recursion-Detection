@@ -74,3 +74,11 @@ Definition check_tail_recursion_in_module (q: string) (show_all : bool) (fail_on
     then tmMsg "Module contains only Tail-recursive calls."
     else (if fail_on_non_tailcalls then tmFail else tmMsg) "Module contains Non-Tail-recursive calls.") ;;
   ret tt.
+
+(** Lists all recursive calls in module [q]. *)
+Definition list_reccalls_in_module (q: string) : TemplateMonad unit :=
+  check_tail_recursion_in_module q true false.
+
+(** Lists all non-tail recursive calls in module [q]. *)
+Definition list_nontail_calls_in_module (q: string) : TemplateMonad unit :=
+  check_tail_recursion_in_module q false false.
