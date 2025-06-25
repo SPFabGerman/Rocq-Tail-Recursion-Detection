@@ -4,6 +4,8 @@ From Corelib Require Lists.ListDef Floats.SpecFloat BinNums.IntDef.
 
 From Stdlib Require Import ZArith.
 
+(* TODO: Check which Corelib modules are really required. *)
+
 Set Extraction Output Directory "evaluation_out/EvalStdlib".
 
 (* Phase 1: Extract OCaml programs of the Corelib.
@@ -22,24 +24,21 @@ Definition show_all := true.
 Require Import Commands.
 From MetaRocq.Utils Require Import utils.
 
-Definition evaluate_module := if show_all then list_reccalls_in_module else list_nontail_calls_in_module.
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Logic").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Datatypes").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Specif").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Decimal").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Hexadecimal").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Number").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Nat").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Lists.ListDef").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Numbers.BinNums").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.BinNums.PosDef").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.BinNums.NatDef").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.BinNums.IntDef").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Floats.FloatClass").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Floats.SpecFloat").
 
-
-MetaRocq Run (evaluate_module "Corelib.Init.Logic").
-MetaRocq Run (evaluate_module "Corelib.Init.Datatypes").
-MetaRocq Run (evaluate_module "Corelib.Init.Specif").
-MetaRocq Run (evaluate_module "Corelib.Init.Decimal").
-MetaRocq Run (evaluate_module "Corelib.Init.Hexadecimal").
-MetaRocq Run (evaluate_module "Corelib.Init.Number").
-MetaRocq Run (evaluate_module "Corelib.Init.Nat").
-MetaRocq Run (evaluate_module "Corelib.Lists.ListDef").
-MetaRocq Run (evaluate_module "Corelib.Numbers.BinNums").
-MetaRocq Run (evaluate_module "Corelib.BinNums.PosDef").
-MetaRocq Run (evaluate_module "Corelib.BinNums.NatDef").
-MetaRocq Run (evaluate_module "Corelib.BinNums.IntDef").
-MetaRocq Run (evaluate_module "Corelib.Floats.FloatClass").
-MetaRocq Run (evaluate_module "Corelib.Floats.SpecFloat").
-
-MetaRocq Run (evaluate_module "Stdlib.ZArith.BinInt").
-MetaRocq Run (evaluate_module "Stdlib.NArith.BinNat").
-MetaRocq Run (evaluate_module "Stdlib.PArith.BinPos").
+MetaRocq Run (list_all_rec_calls_in_module "Stdlib.ZArith.BinInt").
+MetaRocq Run (list_all_rec_calls_in_module "Stdlib.NArith.BinNat").
+MetaRocq Run (list_all_rec_calls_in_module "Stdlib.PArith.BinPos").

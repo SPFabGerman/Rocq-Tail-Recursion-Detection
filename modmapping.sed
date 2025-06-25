@@ -1,3 +1,4 @@
+# TODO: Check again whether the output files can be generated with the full module hierarchy.
 s/^Decimal.double/Decimal.Little.double/
 s/^Decimal.succ/Decimal.Little.succ/
 s/^Decimal.succ_double/Decimal.Little.succ_double/

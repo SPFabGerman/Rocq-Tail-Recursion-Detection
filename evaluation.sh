@@ -1,15 +1,27 @@
 #!/usr/bin/env bash
-# Script to evaluate our algorithm, by comparing it against some extracted and compiled OCaml code.
-# Modules to check should be specified in ./examples/Evaluation.v
-# Run this script with `make evaluation`.
-# Output files can be found in ./examples/evaluation*
+# This script compiles all ML files in the folder SRC_DIR and creates a binary.
+# Then, the binary is partially disassembled, i.e. we fetch the ML functions
+# and analyze them for call instructions to find the non-tail recursive ones.
+# Those functions are mapped to the original module and written to the evaluation
+# log for that library.
 
 set -euo pipefail
 
-
-EVAL_LIBRARY=$1
+if [ -z "$1" ]; then
+  echo "No library to compile was given."
+  echo "Please provide the folder name containing the OCaml files, e.g. Corelib for evaluation_out/Corelib"
+  exit 1
+else
+  EVAL_LIBRARY=$1
+fi
 
 SRC_DIR=evaluation_out/${EVAL_LIBRARY}
+
+if [ ! -d "$SRC_DIR" ]; then
+  echo "Source directory $SRC_DIR does not exist."
+  exit 1
+fi
+
 
 # Run a full OCaml compilation to native binary code
 echo "Compiling OCaml code"
@@ -22,7 +34,7 @@ C=( $(objdump -t ./${SRC_DIR}/Program.out | grep F | grep "$(cd ./${SRC_DIR}/; l
 
 for c in "${C[@]}"; do
     # Removing the caml and coq_ prefixes
-    rocq_mod=$(echo "$c" | sed 's/^caml//g' | sed 's/__/./g' | sed 's/.coq_/./')
+    rocq_mod=$(echo "$c" | sed -e 's/^caml//;s/__/./g;s/.coq_/./')
     # Decompile each symbol and check for recursive calls
     if objdump --disassemble=$c ./${SRC_DIR}/Program.out | grep call | grep -q "$c"; then
         echo "${rocq_mod%_*} ($c)"
