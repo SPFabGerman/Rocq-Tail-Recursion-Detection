@@ -1,72 +1,88 @@
+
+OUT_DIR ?= "."
+
 # Creates the raw output of checking a library.
-.PRECIOUS: evaluation_out/Library_%_raw.txt
-evaluation_out/Library_%_raw.txt : evaluation/%.v
+.PRECIOUS: ${OUT_DIR}/Library_%_raw.txt
+${OUT_DIR}/Library_%_raw.txt : evaluation/Eval%.v
 	@echo "Compiling $< and generating $@"
 	@mkdir -p $(subst _raw.txt,,$(subst Library_,,$@))
 	@rocq compile -R theories TRchecker $^ | grep -v "^Module contains" > $@
 
 
 # Extracts the recursive calls from the raw output for a library.
-.PRECIOUS: evaluation_out/Library_%_reccalls.txt
-evaluation_out/Library_%_reccalls.txt : evaluation_out/Library_%_raw.txt
+.PRECIOUS: ${OUT_DIR}/Library_%_reccalls.txt
+${OUT_DIR}/Library_%_reccalls.txt : ${OUT_DIR}/Library_%_raw.txt
 	@echo "Filtering recursive calls into $@"
 	@cat $< | grep -v "^Unsupported" | sort | uniq > $@
 
 
 # Extracts the tail recursive calls from the recursive calls output for a library.
-.PRECIOUS: evaluation_out/Library_%_tailreccalls.txt
-evaluation_out/Library_%_tailreccalls.txt : evaluation_out/Library_%_reccalls.txt
+.PRECIOUS: ${OUT_DIR}/Library_%_tailreccalls.txt
+${OUT_DIR}/Library_%_tailreccalls.txt : ${OUT_DIR}/Library_%_reccalls.txt
 	@echo "Filtering tail recursive calls into $@"
 	@cat $< | grep "^Tail-Recursive" > $@
 
 
 # Extracts the recursive functions from the recursive calls output for a library.
-.PRECIOUS: evaluation_out/Library_%_recfuncs.txt
-evaluation_out/Library_%_recfuncs.txt : evaluation_out/Library_%_reccalls.txt
+.PRECIOUS: ${OUT_DIR}/Library_%_recfuncs.txt
+${OUT_DIR}/Library_%_recfuncs.txt : ${OUT_DIR}/Library_%_reccalls.txt
 	@echo "Filtering recursive functions into $@"
 	@cat $< | sed 's/^.*(\(.*\)):.*$$/\1/' | sort | uniq > $@
 
 
 # Extracts the non-tail recursive functions from the recursive calls output for a library.
-.PRECIOUS: evaluation_out/Library_%_ntrecfuncs.txt
-evaluation_out/Library_%_ntrecfuncs.txt : evaluation_out/Library_%_reccalls.txt
+.PRECIOUS: ${OUT_DIR}/Library_%_ntrecfuncs.txt
+${OUT_DIR}/Library_%_ntrecfuncs.txt : ${OUT_DIR}/Library_%_reccalls.txt
 	@echo "Filtering non-tail recursive functions into $@"
 	@cat $< | grep "^Non-Tail-Recursive Call" | sed 's/^.*(\(.*\)):.*$$/\1/' | sort | uniq > $@
 
 
 # Extracts the Type/Set non-tail recursive functions from the non-tail recursive function info for a library.
-.PRECIOUS: evaluation_out/Library_%_ntrecfuncs_noprops.txt
-evaluation_out/Library_%_ntrecfuncs_noprops.txt : evaluation_out/Library_%_ntrecfuncs.txt
+.PRECIOUS: ${OUT_DIR}/Library_%_ntrecfuncs_noprops.txt
+${OUT_DIR}/Library_%_ntrecfuncs_noprops.txt : ${OUT_DIR}/Library_%_ntrecfuncs.txt
 	@echo "Filtering non-propositional non-tail recursive functions into $@"
 	@cat $< | sed -f filter_prop.sed | grep -v '^$$' | sort | uniq > $@
 
 
 # Runs the compilation based evaluation and generates the non-tail recursive calls found in the binary of the library.
-.PRECIOUS: evaluation_out/Library_%_compilation.txt
-evaluation_out/Library_%_compilation.txt : evaluation_out/Library_%_ntrecfuncs_noprops.txt
-	@echo "Running compiler based tests and pushing agreement into $@"
-	@bash ./evaluation.sh $(subst _compilation.txt,,$(subst evaluation_out/Library_,,$@))
+.PRECIOUS: ${OUT_DIR}/Library_%_compilation.txt
+${OUT_DIR}/Library_%_compilation.txt : ${OUT_DIR}/Library_%_ntrecfuncs_noprops.txt
+	@echo "Running compiler based tests and pushing found non-tail recursive functions and assembly based name into $@"
+	@bash ./evaluation.sh ${OUT_DIR} $(subst _compilation.txt,,$(subst ${OUT_DIR}/Library_,,$@))
 
 
 # Extracts the fully qualified function names from the compilation based evaluation.
-.PRECIOUS: evaluation_out/Library_%_compilation_mods.txt
-evaluation_out/Library_%_compilation_mods.txt : evaluation_out/Library_%_compilation.txt
+.PRECIOUS: ${OUT_DIR}/Library_%_compilation_mods.txt
+${OUT_DIR}/Library_%_compilation_mods.txt : ${OUT_DIR}/Library_%_compilation.txt
+	@echo "Extracting non-tail recursive function names from compilation output $@"
 	@cat $< | cut -d' ' -f 1 > $@
 
 
+# Generates a list of functions that occur in the algorithm output but not in the compilation based output
+.PRECIOUS: ${OUT_DIR}/Library_%_removed.txt
+${OUT_DIR}/Library_%_removed.txt : ${OUT_DIR}/Library_%_ntrecfuncs_noprops.txt ${OUT_DIR}/Library_%_compilation_mods.txt
+	@echo "Extracting functions found by the algorithm but not in object code into $@"
+	@comm -2 -3 $^ > $@
+
+
+# Generates a list of functions that occur in the compilation based output but not in the algorithm output
+.PRECIOUS: ${OUT_DIR}/Library_%_added.txt
+${OUT_DIR}/Library_%_added.txt : ${OUT_DIR}/Library_%_ntrecfuncs_noprops.txt ${OUT_DIR}/Library_%_compilation_mods.txt
+	@echo "Extracting functions found in object code but not by the algorithm into $@"
+	@comm -1 -3 $^ > $@
+
+
 # Generates a list of functions for which our algorithm agrees with the compilation based output.
-# Also, generates on the fly the disageements, i.e. the functions which exist only in the output
-# of our algorithm or in the compilation based output.
-.PRECIOUS: evaluation_out/Library_%_agreement.txt
-evaluation_out/Library_%_agreement.txt : evaluation_out/Library_%_compilation_mods.txt evaluation_out/Library_%_ntrecfuncs_noprops.txt
-	@comm -2 -3 $(subst _agreement,_ntrecfuncs_noprops,$@) $< > $(subst _agreement,_removed,$@)
-	@comm -1 -3 $(subst _agreement,_ntrecfuncs_noprops,$@) $< > $(subst _agreement,_added,$@)
-	@comm -1 -2 $(subst _agreement,_ntrecfuncs_noprops,$@) $< > $@
+.PRECIOUS: ${OUT_DIR}/Library_%_agreement.txt
+${OUT_DIR}/Library_%_agreement.txt : ${OUT_DIR}/Library_%_ntrecfuncs_noprops.txt ${OUT_DIR}/Library_%_compilation_mods.txt
+	@echo "Extracting functions on which both the algorithm and the object based analysis agree into $@"
+	@comm -1 -2 $^ > $@
+
 
 # Generates a summary for the library being analyzed.
-evaluation_out/Library_%_summary.txt : evaluation_out/Library_%_ntrecfuncs_noprops.txt evaluation_out/Library_%_tailreccalls.txt evaluation_out/Library_%_recfuncs.txt evaluation_out/Library_%_agreement.txt
+${OUT_DIR}/Library_%_summary.txt : ${OUT_DIR}/Library_%_ntrecfuncs_noprops.txt ${OUT_DIR}/Library_%_tailreccalls.txt ${OUT_DIR}/Library_%_recfuncs.txt ${OUT_DIR}/Library_%_agreement.txt ${OUT_DIR}/Library_%_added.txt ${OUT_DIR}/Library_%_removed.txt
 	@echo "=================================================" | tee -a $@
-	@echo "Algorithm stats for Rocq library $(subst _summary.txt,,$(subst evaluation_out/Library_Eval,,$@)) and its dependencies" | tee -a $@
+	@echo "Algorithm stats for Rocq library $(subst _summary.txt,,$(subst ${OUT_DIR}/Library_,,$@)) and its dependencies" | tee -a $@
 	@echo "Recursive Calls            : " `cat $(subst _summary,_reccalls,$@)           | grep -v '^$$' | wc -l` | tee -a $@
 	@echo "Tail Recursive Calls       : " `cat $(subst _summary,_tailreccalls,$@)       | grep -v '^$$' | wc -l` | tee -a $@
 	@echo "Recursive Functions        : " `cat $(subst _summary,_recfuncs,$@)           | grep -v '^$$' | wc -l` | tee -a $@
@@ -82,5 +98,5 @@ evaluation_out/Library_%_summary.txt : evaluation_out/Library_%_ntrecfuncs_nopro
 	@echo "This summary can be found in $@"
 	@echo "For a list of functions, being only present in Rocq, see $(subst _summary,_removed,$@)"
 	@echo "For a list of functions, being only present in ocamlopt compilation output, see $(subst _summary,_added,$@)"
-	@echo "Generally, all output files can be found in evaluation_out."
+	@echo "Generally, all output files can be found in ${OUT_DIR}."
 	@echo ""

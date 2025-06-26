@@ -2,7 +2,7 @@
 From Corelib Require Extraction.
 From Corelib Require Lists.ListDef Floats.SpecFloat BinNums.IntDef.
 
-Set Extraction Output Directory "evaluation_out/EvalCorelib".
+Set Extraction Output Directory "evaluation_out/Corelib".
 
 (* Phase 1: Extract OCaml programs of the Corelib.
 We can't use a fully qualified path here, so check that you have the correct library with About. *)
@@ -15,7 +15,6 @@ Recursive Extraction Library SpecFloat. (* Corelib.Floats.{FloatClass,SpecFloat}
 Require Import Commands.
 From MetaRocq.Utils Require Import utils.
 
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Logic").
 MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Datatypes").
 MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Specif").
 MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Decimal").

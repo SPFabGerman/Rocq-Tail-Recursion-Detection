@@ -7,15 +7,17 @@
 
 set -euo pipefail
 
-if [ -z "$1" ]; then
-  echo "No library to compile was given."
-  echo "Please provide the folder name containing the OCaml files, e.g. Corelib for evaluation_out/Corelib"
+if [ $# -lt 2 ]; then
+  echo "No and output directiry and library to compile were given."
+  echo "Usage: ./evaluation.sh out_dir lib_name"
+  echo "E.g. : ./evaluation.sh evaluation_out CoreLib"
   exit 1
 else
-  EVAL_LIBRARY=$1
+  OUT_DIR=$1
+  EVAL_LIBRARY=$2
 fi
 
-SRC_DIR=evaluation_out/${EVAL_LIBRARY}
+SRC_DIR=${OUT_DIR}/${EVAL_LIBRARY}
 
 if [ ! -d "$SRC_DIR" ]; then
   echo "Source directory $SRC_DIR does not exist."
@@ -24,6 +26,8 @@ fi
 
 
 # Run a full OCaml compilation to native binary code
+echo "Cleaning ${SRC_DIR} before compilation"
+make -C ./${SRC_DIR}/ -f ../../Makefile_OCaml clean
 echo "Compiling OCaml code"
 make -C ./${SRC_DIR}/ -f ../../Makefile_OCaml Program.out
 
@@ -39,6 +43,6 @@ for c in "${C[@]}"; do
     if objdump --disassemble=$c ./${SRC_DIR}/Program.out | grep call | grep -q "$c"; then
         echo "${rocq_mod%_*} ($c)"
     fi
-done | sed -f modmapping.sed | sort > ./evaluation_out/Library_${EVAL_LIBRARY}_compilation.txt
+done | sed -f modmapping.sed | sort > ./${OUT_DIR}/Library_${EVAL_LIBRARY}_compilation.txt
 
 exit 0

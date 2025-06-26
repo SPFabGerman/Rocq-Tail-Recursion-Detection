@@ -1,43 +1,29 @@
 (* Do the extraction first, as MetaRocq imports override Corelib. *)
 From Corelib Require Extraction.
-From Corelib Require Lists.ListDef Floats.SpecFloat BinNums.IntDef.
 
 From Stdlib Require Import ZArith.
 
-(* TODO: Check which Corelib modules are really required. *)
 
-Set Extraction Output Directory "evaluation_out/EvalStdlib".
+Set Extraction Output Directory "evaluation_out/Stdlib".
 
-(* Phase 1: Extract OCaml programs of the Corelib.
+(* Phase 1: Extract OCaml programs of the Stdlib.
 We can't use a fully qualified path here, so check that you have the correct library with About. *)
-Recursive Extraction Library Nat. (* Corelib.Init.{Logic,Datatypes,Specif,Decimal,Hexadecimal,Number,Nat} *)
-Recursive Extraction Library ListDef. (* Corelib.Lists.ListDef *)
-Recursive Extraction Library IntDef. (* Corelib.Numbers.BinNums, Corelib.BinNums.{PosDef,NatDef,IntDef} *)
-Recursive Extraction Library SpecFloat. (* Corelib.Floats.{FloatClass,SpecFloat} *)
-
 Recursive Extraction Library BinInt.
 Recursive Extraction Library BinNat.
-
-Definition show_all := true.
 
 (* Phase 2: Cross check with our algorithm. *)
 Require Import Commands.
 From MetaRocq.Utils Require Import utils.
 
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Logic").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Datatypes").
+(* The following modules are dependencies of BinInt, BinNat or BinPos. Thus, we have to check them, too. *)
 MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Specif").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Datatypes").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Nat").
 MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Decimal").
 MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Hexadecimal").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Number").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Init.Nat").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Lists.ListDef").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Numbers.BinNums").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.BinNums.PosDef").
 MetaRocq Run (list_all_rec_calls_in_module "Corelib.BinNums.NatDef").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.BinNums.IntDef").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Floats.FloatClass").
-MetaRocq Run (list_all_rec_calls_in_module "Corelib.Floats.SpecFloat").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.BinNums.PosDef").
+MetaRocq Run (list_all_rec_calls_in_module "Corelib.Numbers.BinNums").
 
 MetaRocq Run (list_all_rec_calls_in_module "Stdlib.ZArith.BinInt").
 MetaRocq Run (list_all_rec_calls_in_module "Stdlib.NArith.BinNat").
