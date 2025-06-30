@@ -2,6 +2,54 @@
 
 This Rocq package provides a collection of functions, that allow one to automatically check if a certain function is fully tail recursive (including dependencies) or not.
 
+## Dependencies
+
+### Basic Dependencies
+
+This package highly depends on [MetaRocq](https://metarocq.github.io/).
+
+Currently supported versions of MetaRocq are: `1.4+9.0`. However, later versions may work, too.
+
+Other dependencies are:
+
+- GNU make
+- OCaml (also a dependency of MetaRocq)
+
+### Evaluation Dependencies
+
+In order to successfully run the evaluation script, additional tools are used:
+
+- sed
+- grep
+- GNU coreutils (comm, cut, sort, uniq)
+- GNU Binutils (objdump)
+
+## Installation
+
+The tool can be installed by first cloning the repository:
+
+> git clone https://github.com/SPFabGerman/Rocq-Tail-Recursion-Detection.git ./rocq-trchecker
+
+Then, after changing into the cloned directory (using `cd rocq-trchecker`), the tool can be
+installed using OPAM with
+
+> opam install .
+
+## Evaluation
+
+After cloning the repository, the evaluation can be started by calling
+
+> make evaluation
+
+Alternatively, the evaluation can also be called by directly using the evaluation makefile
+
+> make -f MakefileEval.mk all
+
+Depending on the hardware, the evaluation for parts of the Corelib and Stdlib can take some minutes but usually
+should not take more than 10 minutes on reasonable hardware.
+
+The evaluation results are printed both to the console but stored for further inspection in a folder `evaluation_out`.
+
 ## Quick Usage Example
 
 ```
@@ -42,11 +90,6 @@ When `false`, it only shows problematic (non-tail) recursive calls.
 `FAIL_ON_NON_TAILCALLS` is a boolean variable.
 When `true`, the program will fail, if a problematic (non-tail) recursive calls is found.
 When `false`, the program will never fail.
-
-## Dependencies
-
-This package depends on [MetaRocq](https://metarocq.github.io/).
-Currently supported versions of MetaRocq are: `1.4+9.0`.
 
 ## Current Limitations
 
