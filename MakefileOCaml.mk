@@ -32,6 +32,10 @@ clean:
 	rm -f *.cm[iox]
 	rm -f *.o
 
+cleanall: clean
+	rm -f *.ml *.mli
+	rm -f .depend
+
 .depend:
 	$(OCAMLDEP) *.mli *.ml > .depend
 

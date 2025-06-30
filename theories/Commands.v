@@ -41,6 +41,15 @@ Definition check_tail_recursion {A} (t : A) (show_all : bool) (fail_on_non_tailc
   ret tt.
 
 
+(** Lists all recursive calls in [t]. *)
+Definition list_all_rec_calls {A} (t : A) : TemplateMonad unit :=
+  check_tail_recursion t true false.
+
+(** Lists all non-tail recursive calls in [t]. *)
+Definition list_non_tail_rec_calls {A} (t : A) : TemplateMonad unit :=
+  check_tail_recursion t false false.
+
+
 (** Extracts the definition of every transparent constant in the list of global references from the current environment.
 Silently ignores all constants marked as opaque (typically Axioms, Lemmas, ...).
 Also ignores everything that isn't a constant (Inductive types, constructors and variables). *)
@@ -74,3 +83,11 @@ Definition check_tail_recursion_in_module (q: string) (show_all : bool) (fail_on
     then tmMsg "Module contains only Tail-recursive calls."
     else (if fail_on_non_tailcalls then tmFail else tmMsg) "Module contains Non-Tail-recursive calls.") ;;
   ret tt.
+
+(** Lists all recursive calls in module [q]. *)
+Definition list_all_rec_calls_in_module (q: string) : TemplateMonad unit :=
+  check_tail_recursion_in_module q true false.
+
+(** Lists all non-tail recursive calls in module [q]. *)
+Definition list_non_tail_rec_calls_in_module (q: string) : TemplateMonad unit :=
+  check_tail_recursion_in_module q false false.
