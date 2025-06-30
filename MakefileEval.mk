@@ -71,6 +71,7 @@ ${EVAL_OUT_DIR}/%_ntrecfuncs_noprops.txt : ${EVAL_OUT_DIR}/%_ntrecfuncs.txt
 .PRECIOUS: ${EVAL_OUT_DIR}/%/.extracted
 ${EVAL_OUT_DIR}/%/.extracted : evaluation/%Extraction.v
 	@mkdir -p $(subst .extracted,,$@)
+	@$(MAKE) -C $(basename $@) -f ../../MakefileOCaml.mk cleanall
 	@rocq compile -R theories TRchecker $<
 	@touch $@
 
