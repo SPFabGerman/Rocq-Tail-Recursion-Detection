@@ -7,26 +7,18 @@
 
 set -euo pipefail
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
   echo "Wrong number of arguments." >&2
-  echo "Usage: ./evaluation.sh out_dir library_name"  >&2
-  echo "E.g. : ./evaluation.sh evaluation_out Corelib"  >&2
+  echo "Usage: ./$(basename "$0") program_path" >&2
+  echo "E.g. : ./$(basename "$0") evaluation_out/Corelib/Program.out" >&2
   exit 1
 else
-  OUT_DIR=$1
-  EVAL_LIBRARY=$2
+  PROGRAM_PATH=$1
+  SRC_DIR=$(dirname "${PROGRAM_PATH}")
 fi
-
-if [ ! -d "$OUT_DIR" ]; then
-  echo "Output directory $OUT_DIR does not exist."
-  exit 1
-fi
-
-SRC_DIR=${OUT_DIR}/${EVAL_LIBRARY}
-PROGRAM_PATH=${SRC_DIR}/Program.out
 
 if [ ! -f "$PROGRAM_PATH" ]; then
-  echo "$PROGRAM_PATH is no file."
+  echo "$PROGRAM_PATH is no file." >&2
   exit 1
 fi
 
@@ -41,6 +33,6 @@ for c in "${C[@]}"; do
     if objdump --disassemble=$c ${PROGRAM_PATH} | grep call | grep -q "$c"; then
         echo "${rocq_mod%_*} ($c)"
     fi
-done | sed -f modmapping.sed | sort > ./${OUT_DIR}/${EVAL_LIBRARY}_compilation.txt
+done
 
 exit 0
